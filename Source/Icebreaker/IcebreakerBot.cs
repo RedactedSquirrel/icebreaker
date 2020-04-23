@@ -83,6 +83,8 @@ namespace Icebreaker
 
                         var teamName = await this.GetTeamNameAsync(connectorClient, team.TeamId);
                         var optedInUsers = await this.GetOptedInUsers(connectorClient, team);
+                        var excludeSet = new HashSet<string>(CloudConfigurationManager.GetSetting("ServiceAccountsToExclude").Split(','));
+                        optedInUsers.RemoveAll(x => excludeSet.Contains(x.Name));
 
                         foreach (var pair in this.MakePairs(optedInUsers).Take(this.maxPairUpsPerTeam))
                         {
